@@ -2,67 +2,110 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Explorador Real ESMAS-ES+</title>
+    <title>Explorador Taxonómico ESMAS-ES+</title>
     <style>
-        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        details { margin: 5px 0; border: 1px solid #eee; padding: 5px; border-radius: 4px; }
-        summary { cursor: pointer; font-weight: bold; color: #00796b; }
-        .ficha { font-size: 0.85em; background: #f9f9f9; padding: 10px; margin: 5px 0; border-left: 3px solid #00acc1; }
-        .nested { margin-left: 20px; }
-        b { color: #00acc1; text-transform: uppercase; font-size: 0.7em; }
+        :root { --primary: #00796b; --sec: #00acc1; --bg: #f0f4f8; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #2c3e50; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 3px solid var(--sec); padding-bottom: 10px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; font-style: italic; margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 15px 25px; margin-bottom: 25px; border: 2px solid #ddd; border-radius: 50px; font-size: 16px; outline: none; transition: 0.3s; box-sizing: border-box; }
+        .search-box:focus { border-color: var(--sec); box-shadow: 0 0 10px rgba(0,172,193,0.2); }
+        
+        details { background: white; border: 1px solid #e1e8ed; border-radius: 8px; margin-bottom: 8px; }
+        summary { padding: 12px 15px; cursor: pointer; font-weight: bold; color: #444; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary:hover { background: #f1f8f9; }
+        summary::after { content: '▶'; font-size: 0.8em; color: var(--sec); transition: 0.3s; }
+        details[open] > summary::after { transform: rotate(90deg); content: '▼'; }
+        
+        .ficha { padding: 15px; background: #fcfdfe; border-top: 1px solid #eee; font-size: 0.95em; line-height: 1.6; border-radius: 0 0 8px 8px; }
+        .nested { margin-left: 25px; border-left: 2px dashed #b2dfdb; padding-left: 15px; margin-top: 5px; }
+        .label { font-weight: bold; color: var(--primary); font-size: 0.75em; text-transform: uppercase; margin-right: 8px; display: inline-block; width: 110px; }
+        .nota-box { margin-top: 8px; padding: 8px; background: #fff3e0; border-radius: 4px; border-left: 3px solid #ffb300; font-style: italic; color: #5d4037; }
+        .mundo-tag { background: var(--sec); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.7em; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>Explorador Automático ESMAS-ES+</h1>
-    <p>Cargando datos directamente desde tu archivo ontologia.txt...</p>
-    <div id="arbol"></div>
+    <h1>Sistema Taxonómico ESMAS-ES+</h1>
+    <div class="subtitle">Explorador de ontología con soporte para notas SKOS</div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 Buscar por concepto, nota o pregunta..." onkeyup="filtrar()">
+    <div id="arbol">Cargando 338 conceptos y notas...</div>
 </div>
 
 <script>
-// FUNCIÓN PARA LEER TU ARCHIVO TXT Y CONVERTIRLO EN ÁRBOL
 fetch('ontologia.txt')
-    .then(response => response.text())
+    .then(r => r.text())
     .then(text => {
         const lines = text.split('\n');
         const concepts = {};
         let currentId = null;
 
-        // Procesar el texto plano a objetos
         lines.forEach(line => {
-            if (line.includes('ex:') && line.includes(' a skos:Concept')) {
-                currentId = line.split(' a ')[0].trim();
-                concepts[currentId] = { id: currentId, label: '', broader: null, def: '', preg: '', resp: '', ej: '' };
+            line = line.trim();
+            // Detectar inicio de concepto
+            if (line.startsWith('ex:') && line.includes(' a skos:Concept')) {
+                currentId = line.split(' ')[0].replace('ex:', '');
+                concepts[currentId] = { id: currentId, label: '', broader: null, def: '', preg: '', resp: '', ej: '', notas: [] };
             }
-            if (currentId && line.includes('skos:prefLabel')) concepts[currentId].label = line.split('"')[1];
-            if (currentId && line.includes('skos:broader')) concepts[currentId].broader = line.split('ex:')[1].split(' ')[0].split(';')[0].trim();
-            if (currentId && line.includes('skos:definition')) concepts[currentId].def = line.split('"')[1];
-            if (currentId && line.includes('ex:pregunta')) concepts[currentId].preg = line.split('"')[1];
-            if (currentId && line.includes('ex:respuesta')) concepts[currentId].resp = line.split('"')[1];
-            if (currentId && line.includes('ex:ejemplo')) concepts[currentId].ej = line.split('"')[1];
+            // Extraer propiedades si estamos dentro de un concepto
+            if (currentId && concepts[currentId]) {
+                if (line.includes('skos:prefLabel')) concepts[currentId].label = line.split('"')[1];
+                if (line.includes('skos:broader')) concepts[currentId].broader = line.split('ex:')[1].split(' ')[0].replace(';', '').trim();
+                if (line.includes('skos:definition')) concepts[currentId].def = line.split('"')[1];
+                if (line.includes('ex:pregunta')) concepts[currentId].preg = line.split('"')[1];
+                if (line.includes('ex:respuesta')) concepts[currentId].resp = line.split('"')[1];
+                if (line.includes('ex:ejemplo')) concepts[currentId].ej = line.split('"')[1];
+                
+                // NUEVO: Capturar skos:note (contraposición, relación específica, etc.)
+                if (line.includes('skos:note')) {
+                    let nota = line.split('"')[1];
+                    if (nota) concepts[currentId].notas.push(nota);
+                }
+            }
         });
 
-        // Función para dibujar
         function draw(parentId) {
             let html = '';
-            Object.values(concepts).filter(c => (parentId === null ? !c.broader || c.broader === 'mundos_scheme' : c.broader === parentId.replace('ex:','')))
-            .forEach(c => {
-                html += `<details>
-                    <summary>${c.label || c.id}</summary>
+            const filtered = Object.values(concepts).filter(c => 
+                parentId === null ? (!c.broader || c.broader === 'mundos_scheme') : c.broader === parentId
+            );
+
+            filtered.forEach(c => {
+                html += `<details class="item" data-search="${(c.label + c.preg + c.resp + c.ej + c.notas.join(' ')).toLowerCase()}">
+                    <summary>${c.label || c.id} ${parentId === null ? '<span class="mundo-tag">Mundo</span>' : ''}</summary>
                     <div class="ficha">
-                        ${c.def ? `<div><b>Def:</b> ${c.def}</div>` : ''}
-                        ${c.preg ? `<div><b>Pregunta:</b> ${c.preg}</div>` : ''}
-                        ${c.resp ? `<div><b>Respuesta:</b> ${c.resp}</div>` : ''}
-                        ${c.ej ? `<div><b>Ejemplo:</b> ${c.ej}</div>` : ''}
+                        ${c.def ? `<div><span class="label">Definición:</span> ${c.def}</div>` : ''}
+                        ${c.preg ? `<div><span class="label">Pregunta:</span> ${c.preg}</div>` : ''}
+                        ${c.resp ? `<div><span class="label">Respuesta:</span> ${c.resp}</div>` : ''}
+                        ${c.ej ? `<div><span class="label">Ejemplo:</span> <i>"${c.ej}"</i></div>` : ''}
+                        
+                        ${c.notas.length > 0 ? c.notas.map(n => `<div class="nota-box"><b>Nota:</b> ${n}</div>`).join('') : ''}
+                        
+                        <div class="nested">${draw(c.id)}</div>
                     </div>
-                    <div class="nested">${draw(c.id)}</div>
                 </details>`;
             });
             return html;
         }
         document.getElementById('arbol').innerHTML = draw(null);
     });
+
+function filtrar() {
+    let q = document.getElementById('search').value.toLowerCase();
+    document.querySelectorAll('.item').forEach(it => {
+        let text = it.getAttribute('data-search');
+        if (text.includes(q)) {
+            it.style.display = "block";
+            if(q.length > 2) {
+                it.setAttribute('open', 'true');
+                let p = it.parentElement.closest('details');
+                while(p) { p.setAttribute('open', 'true'); p = p.parentElement.closest('details'); }
+            }
+        } else { it.style.display = "none"; }
+    });
+}
 </script>
 </body>
 </html>
