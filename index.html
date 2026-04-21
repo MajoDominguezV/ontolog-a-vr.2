@@ -11,34 +11,27 @@
         .subtitle { text-align: center; color: #666; font-style: italic; margin-bottom: 20px; }
         .search-box { width: 100%; padding: 15px 25px; margin-bottom: 25px; border: 2px solid #ddd; border-radius: 50px; font-size: 16px; outline: none; transition: 0.3s; box-sizing: border-box; }
         .search-box:focus { border-color: var(--sec); box-shadow: 0 0 10px rgba(0,172,193,0.2); }
-        
         details { background: white; border: 1px solid #e1e8ed; border-radius: 8px; margin-bottom: 8px; }
         summary { padding: 12px 15px; cursor: pointer; font-weight: bold; color: #444; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         summary:hover { background: #f1f8f9; }
         summary::after { content: '▶'; font-size: 0.8em; color: var(--sec); transition: 0.3s; }
         details[open] > summary::after { transform: rotate(90deg); content: '▼'; }
-        
         .ficha { padding: 15px; background: #fcfdfe; border-top: 1px solid #eee; font-size: 0.95em; line-height: 1.6; border-radius: 0 0 8px 8px; }
         .nested { margin-left: 25px; border-left: 2px dashed #b2dfdb; padding-left: 15px; margin-top: 5px; }
-        .label { font-weight: bold; color: var(--primary); font-size: 0.75em; text-transform: uppercase; margin-right: 8px; display: inline-block; width: 130px; }
-        
-        /* Estilos para las Notas */
+        .label { font-weight: bold; color: var(--primary); font-size: 0.75em; text-transform: uppercase; margin-right: 8px; display: inline-block; width: 135px; }
         .nota-box { margin-top: 8px; padding: 10px; border-radius: 6px; font-size: 0.9em; border-left: 4px solid; }
         .contraposicion { background: #fff3e0; border-color: #ffb300; color: #5d4037; }
         .relacion-esp { background: #e0f2f1; border-color: #00897b; color: #004d40; }
-        
         .mundo-tag { background: var(--sec); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.7em; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>Sistema Taxonómico ESMAS-ES+</h1>
-    <div class="subtitle">Explorador de ontología con distinciones de contraposición y relación</div>
-    <input type="text" class="search-box" id="search" placeholder="🔍 Buscar concepto, nota o pregunta..." onkeyup="filtrar()">
+    <div class="subtitle">Explorador de ontología con detección avanzada de notas</div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 Buscar..." onkeyup="filtrar()">
     <div id="arbol">Cargando 338 conceptos...</div>
 </div>
-
 <script>
 fetch('ontologia.txt')
     .then(r => r.text())
@@ -48,28 +41,26 @@ fetch('ontologia.txt')
         let currentId = null;
 
         lines.forEach(line => {
-            line = line.trim();
-            if (line.startsWith('ex:') && line.includes(' a skos:Concept')) {
-                currentId = line.split(' ')[0].replace('ex:', '');
+            let trimLine = line.trim();
+            if (trimLine.startsWith('ex:') && trimLine.includes(' a skos:Concept')) {
+                currentId = trimLine.split(' ')[0].replace('ex:', '');
                 concepts[currentId] = { id: currentId, label: '', broader: null, def: '', preg: '', resp: '', ej: '', notasContra: [], notasRel: [] };
             }
             if (currentId && concepts[currentId]) {
-                if (line.includes('skos:prefLabel')) concepts[currentId].label = line.split('"')[1];
-                if (line.includes('skos:broader')) concepts[currentId].broader = line.split('ex:')[1].split(' ')[0].replace(';', '').trim();
-                if (line.includes('skos:definition')) concepts[currentId].def = line.split('"')[1];
-                if (line.includes('ex:pregunta')) concepts[currentId].preg = line.split('"')[1];
-                if (line.includes('ex:respuesta')) concepts[currentId].resp = line.split('"')[1];
-                if (line.includes('ex:ejemplo')) concepts[currentId].ej = line.split('"')[1];
+                if (trimLine.includes('skos:prefLabel')) concepts[currentId].label = trimLine.split('"')[1];
+                if (trimLine.includes('skos:broader')) concepts[currentId].broader = trimLine.split('ex:')[1].split(' ')[0].replace(';', '').trim();
+                if (trimLine.includes('skos:definition')) concepts[currentId].def = trimLine.split('"')[1];
+                if (trimLine.includes('ex:pregunta')) concepts[currentId].preg = trimLine.split('"')[1];
+                if (trimLine.includes('ex:respuesta')) concepts[currentId].resp = trimLine.split('"')[1];
+                if (trimLine.includes('ex:ejemplo')) concepts[currentId].ej = trimLine.split('"')[1];
                 
-                // Clasificar notas según su contenido
-                if (line.includes('skos:note')) {
-                    let contenido = line.split('"')[1];
-                    if (contenido) {
-                        if (contenido.toLowerCase().includes('contraposicion')) {
-                            concepts[currentId].notasContra.push(contenido.replace('contraposicion:', '').trim());
-                        } else if (contenido.toLowerCase().includes('relacion_especifica')) {
-                            concepts[currentId].notasRel.push(contenido.replace('relacion_especifica:', '').trim());
-                        }
+                // DETECCIÓN MEJORADA DE NOTAS (aunque no empiecen por skos:note)
+                if (trimLine.includes('"') && (trimLine.includes('contraposicion') || trimLine.includes('relacion_especifica'))) {
+                    let contenido = trimLine.split('"')[1];
+                    if (contenido.includes('contraposicion:')) {
+                        concepts[currentId].notasContra.push(contenido.replace('contraposicion:', '').trim());
+                    } else if (contenido.includes('relacion_especifica:')) {
+                        concepts[currentId].notasRel.push(contenido.replace('relacion_especifica:', '').trim());
                     }
                 }
             }
@@ -80,7 +71,6 @@ fetch('ontologia.txt')
             const filtered = Object.values(concepts).filter(c => 
                 parentId === null ? (!c.broader || c.broader === 'mundos_scheme') : c.broader === parentId
             );
-
             filtered.forEach(c => {
                 html += `<details class="item" data-search="${(c.label + c.preg + c.resp + c.ej + c.notasContra.join(' ') + c.notasRel.join(' ')).toLowerCase()}">
                     <summary>${c.label || c.id} ${parentId === null ? '<span class="mundo-tag">Mundo</span>' : ''}</summary>
@@ -89,11 +79,8 @@ fetch('ontologia.txt')
                         ${c.preg ? `<div><span class="label">Pregunta:</span> ${c.preg}</div>` : ''}
                         ${c.resp ? `<div><span class="label">Respuesta:</span> ${c.resp}</div>` : ''}
                         ${c.ej ? `<div><span class="label">Ejemplo:</span> <i>"${c.ej}"</i></div>` : ''}
-                        
                         ${c.notasContra.map(n => `<div class="nota-box contraposicion"><b>Relación de contraposición:</b> ${n}</div>`).join('')}
-                        
                         ${c.notasRel.map(n => `<div class="nota-box relacion-esp"><b>Relación específica:</b> ${n}</div>`).join('')}
-                        
                         <div class="nested">${draw(c.id)}</div>
                     </div>
                 </details>`;
