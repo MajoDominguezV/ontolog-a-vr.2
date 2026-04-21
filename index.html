@@ -2,101 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Explorador Integral ESMAS-ES+</title>
+    <title>Explorador Real ESMAS-ES+</title>
     <style>
-        :root { --primary: #00796b; --sec: #00acc1; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; padding: 20px; color: #333; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); text-align: center; border-bottom: 3px solid var(--sec); padding-bottom: 10px; margin-bottom: 0; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-style: italic; }
-        .search-box { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ddd; border-radius: 30px; outline: none; font-size: 16px; box-sizing: border-box; }
-        .search-box:focus { border-color: var(--sec); }
-        
-        .node { margin-left: 20px; border-left: 1px dashed #ccc; padding-left: 15px; margin-top: 5px; }
-        details { background: white; border: 1px solid #e1e8ed; border-radius: 6px; margin-bottom: 5px; }
-        summary { padding: 10px 15px; cursor: pointer; font-weight: bold; color: #444; display: flex; justify-content: space-between; align-items: center; }
-        summary:hover { background: #f1f8f9; }
-        summary::after { content: '▶'; font-size: 0.8em; color: var(--sec); }
-        details[open] > summary::after { content: '▼'; }
-        
-        .ficha { padding: 12px; background: #fcfdfe; border-top: 1px solid #eee; font-size: 0.9em; line-height: 1.4; }
-        .label { font-weight: bold; color: var(--primary); font-size: 0.75em; text-transform: uppercase; margin-right: 5px; }
-        .badge { background: var(--sec); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; }
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        details { margin: 5px 0; border: 1px solid #eee; padding: 5px; border-radius: 4px; }
+        summary { cursor: pointer; font-weight: bold; color: #00796b; }
+        .ficha { font-size: 0.85em; background: #f9f9f9; padding: 10px; margin: 5px 0; border-left: 3px solid #00acc1; }
+        .nested { margin-left: 20px; }
+        b { color: #00acc1; text-transform: uppercase; font-size: 0.7em; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>Revisión Taxonómica ESMAS-ES+</h1>
-    <div class="subtitle">Explorador de jerarquías y preguntas de clasificación</div>
-    <input type="text" class="search-box" id="search" placeholder="🔍 Buscar concepto, pregunta o ejemplo..." onkeyup="filtrar()">
-    
-    <div id="tree-container">
-        </div>
+    <h1>Explorador Automático ESMAS-ES+</h1>
+    <p>Cargando datos directamente desde tu archivo ontologia.txt...</p>
+    <div id="arbol"></div>
 </div>
 
 <script>
-// DATOS EXTRAÍDOS DE TU ARCHIVO TXT
-const data = [
-    { id: "ex:mundo_animado", label: "Mundo Animado", broader: null, def: "Diferencia seres vivos frente a otros representantes de otros mundos." },
-    { id: "ex:mundo_material", label: "Mundo Material", broader: null, def: "Diferencia objetos y sustancias físicas frente a otros representantes de otros mundos." },
-    { id: "ex:mundo_intelectual", label: "Mundo Intelectual", broader: null, def: "Diferencia conceptos abstractos e ideas frente a otros mundos." },
-    { id: "ex:situaciones_dinamicas", label: "Situaciones Dinámicas", broader: null, def: "Describe procesos que implican dinamismo." },
-    { id: "ex:situaciones_estaticas", label: "Situaciones Estáticas", broader: null, def: "Describe estados o propiedades que no implican cambio." },
-    { id: "ex:lugar", label: "Lugar", broader: null, def: "Diferencia lugares frente a otros representantes de otros mundos." },
-    { id: "ex:unidades", label: "Unidades", broader: null, def: "Diferencia unidades frente a otros representantes de otros mundos." },
-    
-    // EJEMPLO DE HIJOS (Aquí he incluido los que mencionaste)
-    { id: "ex:humanas_volitivas", label: "Humanas volitivas o intencionales", broader: "ex:situaciones_dinamicas", def: "Procesos con participación humana intencional." },
-    { id: "ex:motrices", label: "Motrices", broader: "ex:situaciones_dinamicas", pregunta: "¿Implica cambio motriz?", respuesta: "Sí, es un bofetón.", ejemplo: "El dolor del bofetón." },
-    { id: "ex:naturales_din", label: "Naturales (Dinámicas)", broader: "ex:situaciones_dinamicas", def: "Describe procesos naturales." },
-    { id: "ex:acontecimientos", label: "Acontecimientos", broader: "ex:situaciones_dinamicas", def: "Procesos resultativos o causativos." },
-    
-    { id: "ex:ciencias_ideologias", label: "Ciencias e ideologías", broader: "ex:mundo_intelectual", def: "Disciplinas del saber." },
-    { id: "ex:derecho", label: "Derecho y jurisprudencia", broader: "ex:ciencias_ideologias", respuesta: "Sí, es una sentencia judicial." }
-];
+// FUNCIÓN PARA LEER TU ARCHIVO TXT Y CONVERTIRLO EN ÁRBOL
+fetch('ontologia.txt')
+    .then(response => response.text())
+    .then(text => {
+        const lines = text.split('\n');
+        const concepts = {};
+        let currentId = null;
 
-function buildTree(nodes, parentId = null) {
-    let html = '';
-    const children = nodes.filter(n => n.broader === parentId);
-    
-    children.forEach(node => {
-        html += `<details class="item" data-text="${node.label.toLowerCase()}">
-            <summary>${node.label} ${node.broader === null ? '<span class="badge">Mundo</span>' : ''}</summary>
-            <div class="ficha">
-                ${node.def ? `<div><span class="label">Def:</span> ${node.def}</div>` : ''}
-                ${node.pregunta ? `<div><span class="label">Pregunta:</span> ${node.pregunta}</div>` : ''}
-                ${node.respuesta ? `<div><span class="label">Respuesta:</span> ${node.respuesta}</div>` : ''}
-                ${node.ejemplo ? `<div><span class="label">Ejemplo:</span> ${node.ejemplo}</div>` : ''}
-                <div class="node">${buildTree(nodes, node.id)}</div>
-            </div>
-        </details>`;
-    });
-    return html;
-}
-
-document.getElementById('tree-container').innerHTML = buildTree(data);
-
-function filtrar() {
-    let val = document.getElementById('search').value.toLowerCase();
-    let items = document.querySelectorAll('.item');
-    items.forEach(item => {
-        let txt = item.getAttribute('data-text');
-        if (txt.includes(val)) {
-            item.style.display = "block";
-            if(val.length > 2) {
-                let parent = item.parentElement;
-                while(parent && parent.tagName === 'DETAILS') {
-                    parent.setAttribute('open', 'true');
-                    parent = parent.parentElement;
-                }
-                item.setAttribute('open', 'true');
+        // Procesar el texto plano a objetos
+        lines.forEach(line => {
+            if (line.includes('ex:') && line.includes(' a skos:Concept')) {
+                currentId = line.split(' a ')[0].trim();
+                concepts[currentId] = { id: currentId, label: '', broader: null, def: '', preg: '', resp: '', ej: '' };
             }
-        } else {
-            item.style.display = "none";
+            if (currentId && line.includes('skos:prefLabel')) concepts[currentId].label = line.split('"')[1];
+            if (currentId && line.includes('skos:broader')) concepts[currentId].broader = line.split('ex:')[1].split(' ')[0].split(';')[0].trim();
+            if (currentId && line.includes('skos:definition')) concepts[currentId].def = line.split('"')[1];
+            if (currentId && line.includes('ex:pregunta')) concepts[currentId].preg = line.split('"')[1];
+            if (currentId && line.includes('ex:respuesta')) concepts[currentId].resp = line.split('"')[1];
+            if (currentId && line.includes('ex:ejemplo')) concepts[currentId].ej = line.split('"')[1];
+        });
+
+        // Función para dibujar
+        function draw(parentId) {
+            let html = '';
+            Object.values(concepts).filter(c => (parentId === null ? !c.broader || c.broader === 'mundos_scheme' : c.broader === parentId.replace('ex:','')))
+            .forEach(c => {
+                html += `<details>
+                    <summary>${c.label || c.id}</summary>
+                    <div class="ficha">
+                        ${c.def ? `<div><b>Def:</b> ${c.def}</div>` : ''}
+                        ${c.preg ? `<div><b>Pregunta:</b> ${c.preg}</div>` : ''}
+                        ${c.resp ? `<div><b>Respuesta:</b> ${c.resp}</div>` : ''}
+                        ${c.ej ? `<div><b>Ejemplo:</b> ${c.ej}</div>` : ''}
+                    </div>
+                    <div class="nested">${draw(c.id)}</div>
+                </details>`;
+            });
+            return html;
         }
+        document.getElementById('arbol').innerHTML = draw(null);
     });
-}
 </script>
 </body>
 </html>
