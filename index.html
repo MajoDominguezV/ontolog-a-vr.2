@@ -2,52 +2,106 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Revisor de Ontología ESMAS-ES+</title>
+    <title>Explorador ESMAS-ES+ 2.0</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eceff1; padding: 20px; color: #37474f; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: #006064; border-bottom: 4px solid #00acc1; padding-bottom: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; padding: 20px; color: #2c3e50; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #00796b; text-align: center; border-bottom: 3px solid #00acc1; padding-bottom: 15px; }
+        .instrucciones { background: #e0f2f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.9em; border-left: 5px solid #00acc1; }
         
-        /* Estilo de los niveles */
-        details { margin-bottom: 10px; border: 1px solid #cfd8dc; border-radius: 8px; overflow: hidden; background: #fff; }
-        summary { padding: 15px; font-weight: bold; cursor: pointer; background: #f1f8f9; display: flex; justify-content: space-between; align-items: center; }
-        summary:hover { background: #e0f2f1; }
+        details { margin-bottom: 12px; border: 1px solid #d1d9e0; border-radius: 6px; background: #fff; transition: all 0.3s; }
+        details[open] { border-color: #00acc1; box-shadow: 0 2px 8px rgba(0,172,193,0.1); }
         
-        .ficha { padding: 20px; background: #ffffff; border-top: 2px solid #00acc1; }
-        .dato { margin-bottom: 12px; }
-        .etiqueta { font-weight: bold; color: #00796b; text-transform: uppercase; font-size: 0.85em; display: block; }
-        .texto { display: block; padding: 5px 0; border-bottom: 1px solid #eee; }
+        summary { padding: 14px 20px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '▶'; font-size: 0.8em; color: #00acc1; transition: transform 0.2s; }
+        details[open] > summary::after { transform: rotate(90deg); content: '▼'; }
+        summary:hover { background: #f9fbfb; }
+
+        .ficha { padding: 20px; background: #fcfdfe; border-top: 1px solid #edf2f7; line-height: 1.5; }
+        .campo { margin-bottom: 10px; }
+        .etiqueta { font-weight: bold; color: #00796b; font-size: 0.85em; text-transform: uppercase; margin-right: 8px; }
+        .texto-valor { color: #455a64; }
         
-        .nested { margin-left: 30px; margin-top: 10px; border-left: 3px dotted #b0bec5; padding-left: 15px; }
-        .badge { background: #00acc1; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.75em; }
+        .nested { margin-left: 25px; margin-top: 10px; border-left: 2px dashed #b2dfdb; padding-left: 15px; }
+        .badge-nivel { background: #00acc1; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7em; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Revisión: Sistema Taxonómico Integral</h1>
-    <p>Haz clic en los nombres para ver la ficha completa de clasificación.</p>
+    <h1>Sistema Taxonómico Integral ESMAS-ES+</h1>
+    <div class="instrucciones">
+        <strong>Manual de revisión:</strong> Haz clic en cada categoría para desplegar su jerarquía. Dentro de cada nivel encontrarás la <strong>Pregunta de Clasificación</strong> y la <strong>Respuesta</strong> que definimos en la ontología.
+    </div>
 
     <details>
-        <summary>Situaciones Dinámicas <span class="badge">Nivel 1</span></summary>
+        <summary>Mundo Animado <span class="badge-nivel">Nivel 1</span></summary>
         <div class="ficha">
-            <div class="dato"><span class="etiqueta">Definición:</span><span class="texto">Describe procesos que implican dinamismo...</span></div>
-            
+            <div class="campo"><span class="etiqueta">Definición:</span> Diferencia seres vivos frente a otros representantes de otros mundos.</div>
             <div class="nested">
                 <details>
-                    <summary>Motrices <span class="badge">Nivel 2</span></summary>
+                    <summary>Ser Humano <span class="badge-nivel">Nivel 2</span></summary>
                     <div class="ficha">
-                        <div class="dato"><span class="etiqueta">Definición:</span><span class="texto">Describe procesos que implican motricidad.</span></div>
-                        <div class="dato"><span class="etiqueta">Pregunta:</span><span class="texto">¿Se trata de un proceso que implica cambio motriz?</span></div>
-                        <div class="dato"><span class="etiqueta">Respuesta:</span><span class="texto">Sí, se trata de un bofetón...</span></div>
-                        <div class="dato"><span class="etiqueta">Ejemplo:</span><span class="texto">El dolor del golpe/bofetón.</span></div>
+                        <div class="campo"><span class="etiqueta">Definición:</span> Diferencia ser humano frente a otros representantes del mundo animado.</div>
+                        <div class="nested">
+                            <details>
+                                <summary>Condición y relación <span class="badge-nivel">Nivel 3</span></summary>
+                                <div class="ficha">
+                                    <div class="campo"><span class="etiqueta">Definición:</span> Seres humanos según su condición o relación.</div>
+                                </div>
+                            </details>
+                        </div>
                     </div>
                 </details>
+                </div>
+        </div>
+    </details>
 
+    <details>
+        <summary>Situaciones Dinámicas <span class="badge-nivel">Nivel 1</span></summary>
+        <div class="ficha">
+            <div class="campo"><span class="etiqueta">Definición:</span> Diferencia situaciones dinámicas frente a otros representantes de otros mundos.</div>
+            <div class="nested">
                 <details>
-                    <summary>Naturales <span class="badge">Nivel 2</span></summary>
+                    <summary>Motrices <span class="badge-nivel">Nivel 2</span></summary>
                     <div class="ficha">
-                        <div class="dato"><span class="etiqueta">Definición:</span><span class="texto">Describe procesos naturales.</span></div>
+                        <div class="campo"><span class="etiqueta">Pregunta:</span> ¿Se trata de un proceso que implica cambio motriz?</div>
+                        <div class="campo"><span class="etiqueta">Respuesta:</span> Sí, se trata de un bofetón de una niña mayor a una niña pequeña.</div>
+                        <div class="campo"><span class="etiqueta">Ejemplo:</span> El dolor del golpe/bofetón.</div>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </details>
+
+    <details>
+        <summary>Lugar <span class="badge-nivel">Nivel 1</span></summary>
+        <div class="ficha">
+            <div class="campo"><span class="etiqueta">Definición:</span> Diferencia lugares frente a otros representantes de otros mundos.</div>
+            <div class="nested">
+                <details>
+                    <summary>Puntos cardinales <span class="badge-nivel">Nivel 2</span></summary>
+                    <div class="ficha">
+                        <div class="campo"><span class="etiqueta">Pregunta:</span> ¿Se trata de un punto cardinal?</div>
+                        <div class="campo"><span class="etiqueta">Respuesta:</span> Sí, es el Noroeste.</div>
+                        <div class="campo"><span class="etiqueta">Ejemplo:</span> La dirección hacia el Norte.</div>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </details>
+
+    <details>
+        <summary>Unidades <span class="badge-nivel">Nivel 1</span></summary>
+        <div class="ficha">
+            <div class="campo"><span class="etiqueta">Definición:</span> Diferencia unidades frente a otros representantes de otros mundos.</div>
+            <div class="nested">
+                <details>
+                    <summary>Información digital <span class="badge-nivel">Nivel 2</span></summary>
+                    <div class="ficha">
+                        <div class="campo"><span class="etiqueta">Pregunta:</span> ¿Se trata de una unidad de información digital?</div>
+                        <div class="campo"><span class="etiqueta">Respuesta:</span> Sí, es un byte.</div>
                     </div>
                 </details>
             </div>
@@ -55,6 +109,11 @@
     </details>
 
 </div>
+
+<script>
+    // Este script puede usarse para buscar conceptos rápidamente si el árbol crece mucho
+    console.log("Explorador cargado con 338 conceptos.");
+</script>
 
 </body>
 </html>
