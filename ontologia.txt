@@ -1002,7 +1002,7 @@ ex:general_acontecimientos a skos:Concept ;
 
 ex:origen_acontecimiento a skos:Concept ;
     skos:prefLabel "Origen (Acontecimiento)"@es ;
-    skos:definition "Describe procesos acontecimiento de tipo origen o causa."@es ;
+    skos:definition "Describe procesos o acontecimientos de tipo origen o causa."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:acontecimientos ;
     ex:pregunta "Se trata de una situación dinámica. ¿Se trata de un evento como origen?"@es ;
@@ -1011,7 +1011,7 @@ ex:origen_acontecimiento a skos:Concept ;
 
 ex:resultado a skos:Concept ;
     skos:prefLabel "Resultado"@es ;
-    skos:definition "Describe procesos acontecimiento de tipo resultativo."@es ;
+    skos:definition "Describe procesos o acontecimientos de tipo resultativo."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:acontecimientos ;
     ex:pregunta "Se trata de una situación dinámica. ¿Se trata de un evento resultativo?"@es ;
@@ -1020,7 +1020,7 @@ ex:resultado a skos:Concept ;
 
 ex:contratiempo a skos:Concept ;
     skos:prefLabel "Contratiempo"@es ;
-    skos:definition "Describe procesos acontecimiento de tipo contratiempo."@es ;
+    skos:definition "Describe procesos o acontecimientos de tipo contratiempo."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:acontecimientos ;
     ex:pregunta "Se trata de una situación dinámica. ¿Se trata de un evento definido como contratiempo?"@es ;
@@ -1029,14 +1029,14 @@ ex:contratiempo a skos:Concept ;
 
 ex:encuentro a skos:Concept ;
     skos:prefLabel "Encuentro"@es ;
-    skos:definition "Describe procesos acontecimiento de tipo encuentro."@es ;
+    skos:definition "Describe procesos o acontecimientos de tipo encuentro."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:acontecimientos ;
     skos:narrower ex:reunion_encuentro, ex:ceremonia_encuentro .
 
 ex:efectivo a skos:Concept ;
     skos:prefLabel "Efectivo"@es ;
-    skos:definition "Describe procesos acontecimiento de tipo efectivo (que ocurren o tienen lugar)."@es ;
+    skos:definition "Describe procesos o acontecimientos de tipo efectivo (que ocurren o tienen lugar)."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:acontecimientos ;
     ex:pregunta "Se trata de una situación dinámica. ¿Se trata de un evento efectivo?"@es ;
@@ -1840,7 +1840,7 @@ ex:madera a skos:Concept ;
 
 ex:minerales_y_metales a skos:Concept ;
     skos:prefLabel "Minerales y metales (Material)"@es ;
-    skos:definition "Objetos de minerales o metales."@es ;
+    skos:definition "Objetos de minerales o metales o los propios materiales."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:categorias_de_productos ;
     ex:pregunta "¿Se trata de un mineral o metal?"@es ;
@@ -1849,7 +1849,7 @@ ex:minerales_y_metales a skos:Concept ;
 
 ex:organico a skos:Concept ;
     skos:prefLabel "Orgánico (Material)"@es ;
-    skos:definition "Objetos de material orgánico."@es ;
+    skos:definition "Objetos de material orgánico o el propio material."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:categorias_de_productos ;
     ex:pregunta "¿Se trata de un material orgánico?"@es ;
@@ -1858,7 +1858,7 @@ ex:organico a skos:Concept ;
 
 ex:piedras_ornamentales a skos:Concept ;
     skos:prefLabel "Piedras ornamentales (Material)"@es ;
-    skos:definition "Objetos de piedras ornamentales."@es ;
+    skos:definition "Objetos de piedras ornamentales o la propia piedra ornamental."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:categorias_de_productos ;
     ex:pregunta "¿Se trata de una piedra ornamental?"@es ;
@@ -1867,7 +1867,7 @@ ex:piedras_ornamentales a skos:Concept ;
 
 ex:artificial a skos:Concept ;
     skos:prefLabel "Artificial (Material)"@es ;
-    skos:definition "Objetos de material artificial."@es ;
+    skos:definition "Objetos de material artificial o el propio material."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:categorias_de_productos ;
     ex:pregunta "¿Se trata de material artificial?"@es ;
@@ -1876,7 +1876,7 @@ ex:artificial a skos:Concept ;
 
 ex:ceramico a skos:Concept ;
     skos:prefLabel "Cerámico (Material)"@es ;
-    skos:definition "Objetos de material cerámico."@es ;
+    skos:definition "Objetos de material cerámico o el propio material."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:categorias_de_productos ;
     ex:pregunta "¿Se trata de material cerámico?"@es ;
