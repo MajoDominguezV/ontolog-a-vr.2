@@ -1579,7 +1579,7 @@ ex:numero_cantidad_unidades a skos:Concept ;
 
 ex:porcentaje_cantidad_unidades a skos:Concept ;
     skos:prefLabel "Porcentaje"@es ;
-    skos:definition "Describe unidades de cantidad de tipo porcentaje."@es ;
+    skos:definition "Describe unidades de cantidad de tipo procentual."@es ;
     skos:inScheme ex:mundos_scheme ;
     skos:broader ex:cantidad_unidades ;
     ex:pregunta "Se trata de una unidad. ¿Se trata de un porcentaje?"@es ;
