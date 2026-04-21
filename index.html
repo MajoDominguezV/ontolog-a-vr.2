@@ -2,135 +2,136 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Explorador ESMAS-ES+ 2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador Ontológico ESMAS-ES+ 2.0</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 20px; color: #2c3e50; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        h1 { color: #00796b; border-bottom: 3px solid #00acc1; padding-bottom: 10px; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid #00acc1; border-radius: 25px; box-sizing: border-box; }
-        details { margin-bottom: 10px; border: 1px solid #d1d9e0; border-radius: 6px; background: #fff; }
-        summary { padding: 12px; font-weight: bold; cursor: pointer; color: #00796b; list-style: none; display: flex; justify-content: space-between; }
-        summary::after { content: '▶'; font-size: 0.8em; }
-        details[open] > summary::after { content: '▼'; }
-        .ficha { padding: 15px; background: #f9fbfb; border-top: 1px solid #eee; font-size: 0.95em; }
-        .nested { margin-left: 25px; border-left: 2px dashed #b2dfdb; padding-left: 15px; margin-top: 10px; }
-        b { color: #00acc1; text-transform: uppercase; font-size: 0.8em; margin-right: 5px; }
+        :root { --primary: #00796b; --secondary: #00acc1; --bg: #f4f7f9; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        .search-box { width: 100%; padding: 15px 25px; margin-bottom: 25px; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 16px; outline: none; transition: border-color 0.3s; }
+        .search-box:focus { border-color: var(--secondary); }
+        
+        details { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; margin-bottom: 10px; overflow: hidden; transition: all 0.3s; }
+        details[open] { border-color: var(--secondary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        summary { padding: 15px; cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fdfdfd; }
+        summary:hover { background: #f1f8f9; }
+        summary::after { content: '⊕'; color: var(--secondary); font-size: 1.2em; }
+        details[open] > summary::after { content: '⊖'; }
+        
+        .content { padding: 15px 20px; border-top: 1px solid #f0f0f0; line-height: 1.6; }
+        .field { margin-bottom: 8px; font-size: 0.95em; }
+        .label { font-weight: bold; color: var(--primary); font-size: 0.8em; text-transform: uppercase; margin-right: 8px; }
+        .nested { margin-left: 20px; border-left: 2px dashed #d1d9e0; padding-left: 15px; margin-top: 10px; }
+        .badge { background: var(--secondary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; vertical-align: middle; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>Sistema Taxonómico ESMAS-ES+</h1>
-    <input type="text" class="search-box" placeholder="Buscar concepto o nivel..." onkeyup="buscar()">
-    <div id="arbol">
-        <details>
-        <summary>Mundo Animado (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Diferencia seres vivos frente a otros mundos.</div>
-        <div class="nested">
-            <details>
-                <summary>Ser Humano (Nivel 2)</summary>
-                <div class="ficha"><b>Definición:</b> Diferencia ser humano frente a otros representantes del mundo animado.</div>
+    <h1>Sistema Taxonómico Integral ESMAS-ES+</h1>
+    <div class="subtitle">Arquitectura conceptual avanzada de siete mundos</div>
+    
+    <input type="text" class="search-box" id="searchInput" onkeyup="filterTree()" placeholder="Escribe para buscar (ej: 'mamífero', 'clavel', 'vatio')...">
+
+    <div id="ontology-tree">
+        <details class="item">
+            <summary>Mundo Animado <span class="badge">Mundo 1</span></summary>
+            <div class="content">
+                <div class="field"><span class="label">Definición:</span> Diferencia seres vivos frente a otros representantes de otros mundos[cite: 13].</div>
                 <div class="nested">
-                    <details>
-                        <summary>Condición y relación (Nivel 3)</summary>
-                        <div class="ficha"><b>Definición:</b> Seres humanos según su condición o relación.</div>
+                    <details class="item">
+                        <summary>Ser Humano</summary>
+                        <div class="content">
+                            <div class="field"><span class="label">Definición:</span> Diferencia ser humano frente a otros representantes del mundo animado[cite: 721].</div>
+                            <div class="nested">
+                                <details class="item">
+                                    <summary>Condición y relación</summary>
+                                    <div class="content">
+                                        <div class="field"><span class="label">Pregunta:</span> ¿Qué título tiene? [cite: 382]</div>
+                                        <div class="field"><span class="label">Respuesta:</span> Es doctor en Filología[cite: 383].</div>
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    </details>
+                    <details class="item">
+                        <summary>Vegetales</summary>
+                        <div class="content">
+                            <div class="nested">
+                                <details class="item">
+                                    <summary>Flor</summary>
+                                    <div class="content">
+                                        <div class="field"><span class="label">Pregunta:</span> ¿Es una flor? [cite: 841]</div>
+                                        <div class="field"><span class="label">Ejemplo:</span> El color de las rosas[cite: 842].</div>
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
                     </details>
                 </div>
-            </details>
-        </div>
-    </details>
+            </div>
+        </details>
 
-    <details>
-        <summary>Situaciones Dinámicas (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Describe procesos que implican dinamismo.</div>
-        <div class="nested">
-            <details>
-                <summary>Motrices (Nivel 2)</summary>
-                <div class="ficha">
-                    <p><b>Pregunta:</b> ¿Se trata de un proceso que implica cambio motriz?</p>
-                    <p><b>Respuesta:</b> Sí, se trata de un bofetón de una niña mayor a una niña pequeña.</p>
-                    <p><b>Ejemplo:</b> El dolor del golpe/bofetón.</p>
+        <details class="item">
+            <summary>Situaciones dinámicas <span class="badge">Mundo 4</span></summary>
+            <div class="content">
+                <div class="field"><span class="label">Definición:</span> Actividades, acciones y procesos ligados al dinamismo[cite: 21].</div>
+                <div class="nested">
+                    <details class="item">
+                        <summary>Motrices</summary>
+                        <div class="content">
+                            <div class="field"><span class="label">Pregunta:</span> ¿Implica cambio motriz? [cite: 755]</div>
+                            <div class="field"><span class="label">Respuesta:</span> Sí, se trata de un bofetón[cite: 756].</div>
+                        </div>
+                    </details>
                 </div>
-                </div> </div> <script>
-    function buscar() {
-        let input = document.querySelector('.search-box').value.toLowerCase();
-        let summaries = document.querySelectorAll('summary');
-        summaries.forEach(s => {
-            let details = s.parentElement;
-            if (s.innerText.toLowerCase().includes(input)) {
-                details.style.display = "block";
+            </div>
+        </details>
+
+        <details class="item">
+            <summary>Unidades <span class="badge">Mundo 7</span></summary>
+            <div class="content">
+                <div class="field"><span class="label">Definición:</span> Unidades de medición y ordenación cronológica[cite: 28].</div>
+                <div class="nested">
+                    <details class="item">
+                        <summary>Información digital</summary>
+                        <div class="content">
+                            <div class="field"><span class="label">Pregunta:</span> ¿Es una unidad de información digital? [cite: 794]</div>
+                            <div class="field"><span class="label">Respuesta:</span> Sí, es un byte[cite: 795].</div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </details>
+    </div>
+</div>
+
+<script>
+    function filterTree() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let items = document.querySelectorAll('.item');
+        
+        items.forEach(item => {
+            let text = item.querySelector('summary').innerText.toLowerCase();
+            if (text.includes(input)) {
+                item.style.display = "block";
+                // Abrir automáticamente si hay búsqueda
+                if(input.length > 2) item.setAttribute('open', 'true');
             } else {
-                details.style.display = "none";
+                item.style.display = "none";
             }
         });
+        
+        if(input.length === 0) {
+            items.forEach(item => {
+                item.style.display = "block";
+                item.removeAttribute('open');
+            });
+        }
     }
-                    <details>
-        <summary>Mundo Material (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Diferencia objetos y sustancias físicas frente a otros mundos.</div>
-        <div class="nested">
-            <details>
-                <summary>Naturales (Nivel 2)</summary>
-                <div class="ficha"><b>Pregunta:</b> ¿Se trata de un elemento de la naturaleza?</div>
-                <div class="nested">
-                    <details><summary>Animal (Gastronomía)</summary><div class="ficha"><b>Ejemplo:</b> Carne de ternera.</div></details>
-                    <details><summary>Vegetal (Hortaliza)</summary><div class="ficha"><b>Ejemplo:</b> Una lechuga.</div></details>
-                </div>
-            </details>
-            <details>
-                <summary>Artificiales (Nivel 2)</summary>
-                <div class="ficha"><b>Pregunta:</b> ¿Es un objeto creado por el ser humano?</div>
-                <div class="nested">
-                    <details><summary>Vestimenta</summary><div class="ficha"><b>Ejemplo:</b> Un abrigo de lana.</div></details>
-                    <details><summary>Edificación</summary><div class="ficha"><b>Ejemplo:</b> Un rascacielos.</div></details>
-                </div>
-            </details>
-        </div>
-    </details>
-
-    <details>
-        <summary>Mundo Intelectual (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Conceptos abstractos, ideas y creaciones mentales.</div>
-        <div class="nested">
-            <details>
-                <summary>Ciencias e ideologías</summary>
-                <div class="ficha"><b>Pregunta:</b> ¿Es una disciplina del saber o pensamiento?</div>
-                <div class="nested">
-                    <details><summary>Derecho y jurisprudencia</summary><div class="ficha"><b>Respuesta:</b> Sí, es una sentencia judicial.</div></details>
-                </div>
-            </details>
-        </div>
-    </details>
-
-    <details>
-        <summary>Situaciones Estáticas (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Describe estados, propiedades o cualidades que no implican cambio o movimiento.</div>
-        <div class="nested">
-            <details>
-                <summary>Atributos o cualidades</summary>
-                <div class="ficha"><b>Pregunta:</b> ¿Describe una característica fija?</div>
-                <div class="nested">
-                    <details><summary>Color</summary><div class="ficha"><b>Ejemplo:</b> El color azul del cielo.</div></details>
-                </div>
-            </details>
-        </div>
-    </details>
-
-    <details>
-        <summary>Unidades (Nivel 1)</summary>
-        <div class="ficha"><b>Definición:</b> Medidas, cantidades y unidades de información.</div>
-        <div class="nested">
-            <details>
-                <summary>Tiempo</summary>
-                <div class="ficha"><b>Ejemplo:</b> Un milenio / Un segundo.</div>
-            </details>
-            <details>
-                <summary>Monetario</summary>
-                <div class="ficha"><b>Ejemplo:</b> El valor del euro.</div>
-            </details>
-        </div>
-    </details>
 </script>
+
 </body>
 </html>
-            </details>
-        </div>
-    </details>
