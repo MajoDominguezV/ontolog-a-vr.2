@@ -2,136 +2,101 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explorador Ontológico ESMAS-ES+ 2.0</title>
+    <title>Explorador Integral ESMAS-ES+</title>
     <style>
-        :root { --primary: #00796b; --secondary: #00acc1; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
-        .search-box { width: 100%; padding: 15px 25px; margin-bottom: 25px; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 16px; outline: none; transition: border-color 0.3s; }
-        .search-box:focus { border-color: var(--secondary); }
+        :root { --primary: #00796b; --sec: #00acc1; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; padding: 20px; color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 3px solid var(--sec); padding-bottom: 10px; margin-bottom: 0; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-style: italic; }
+        .search-box { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ddd; border-radius: 30px; outline: none; font-size: 16px; box-sizing: border-box; }
+        .search-box:focus { border-color: var(--sec); }
         
-        details { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; margin-bottom: 10px; overflow: hidden; transition: all 0.3s; }
-        details[open] { border-color: var(--secondary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        summary { padding: 15px; cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fdfdfd; }
+        .node { margin-left: 20px; border-left: 1px dashed #ccc; padding-left: 15px; margin-top: 5px; }
+        details { background: white; border: 1px solid #e1e8ed; border-radius: 6px; margin-bottom: 5px; }
+        summary { padding: 10px 15px; cursor: pointer; font-weight: bold; color: #444; display: flex; justify-content: space-between; align-items: center; }
         summary:hover { background: #f1f8f9; }
-        summary::after { content: '⊕'; color: var(--secondary); font-size: 1.2em; }
-        details[open] > summary::after { content: '⊖'; }
+        summary::after { content: '▶'; font-size: 0.8em; color: var(--sec); }
+        details[open] > summary::after { content: '▼'; }
         
-        .content { padding: 15px 20px; border-top: 1px solid #f0f0f0; line-height: 1.6; }
-        .field { margin-bottom: 8px; font-size: 0.95em; }
-        .label { font-weight: bold; color: var(--primary); font-size: 0.8em; text-transform: uppercase; margin-right: 8px; }
-        .nested { margin-left: 20px; border-left: 2px dashed #d1d9e0; padding-left: 15px; margin-top: 10px; }
-        .badge { background: var(--secondary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; vertical-align: middle; }
+        .ficha { padding: 12px; background: #fcfdfe; border-top: 1px solid #eee; font-size: 0.9em; line-height: 1.4; }
+        .label { font-weight: bold; color: var(--primary); font-size: 0.75em; text-transform: uppercase; margin-right: 5px; }
+        .badge { background: var(--sec); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Sistema Taxonómico Integral ESMAS-ES+</h1>
-    <div class="subtitle">Arquitectura conceptual avanzada de siete mundos</div>
+    <h1>Revisión Taxonómica ESMAS-ES+</h1>
+    <div class="subtitle">Explorador de jerarquías y preguntas de clasificación</div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 Buscar concepto, pregunta o ejemplo..." onkeyup="filtrar()">
     
-    <input type="text" class="search-box" id="searchInput" onkeyup="filterTree()" placeholder="Escribe para buscar (ej: 'mamífero', 'clavel', 'vatio')...">
-
-    <div id="ontology-tree">
-        <details class="item">
-            <summary>Mundo Animado <span class="badge">Mundo 1</span></summary>
-            <div class="content">
-                <div class="field"><span class="label">Definición:</span> Diferencia seres vivos frente a otros representantes de otros mundos[cite: 13].</div>
-                <div class="nested">
-                    <details class="item">
-                        <summary>Ser Humano</summary>
-                        <div class="content">
-                            <div class="field"><span class="label">Definición:</span> Diferencia ser humano frente a otros representantes del mundo animado[cite: 721].</div>
-                            <div class="nested">
-                                <details class="item">
-                                    <summary>Condición y relación</summary>
-                                    <div class="content">
-                                        <div class="field"><span class="label">Pregunta:</span> ¿Qué título tiene? [cite: 382]</div>
-                                        <div class="field"><span class="label">Respuesta:</span> Es doctor en Filología[cite: 383].</div>
-                                    </div>
-                                </details>
-                            </div>
-                        </div>
-                    </details>
-                    <details class="item">
-                        <summary>Vegetales</summary>
-                        <div class="content">
-                            <div class="nested">
-                                <details class="item">
-                                    <summary>Flor</summary>
-                                    <div class="content">
-                                        <div class="field"><span class="label">Pregunta:</span> ¿Es una flor? [cite: 841]</div>
-                                        <div class="field"><span class="label">Ejemplo:</span> El color de las rosas[cite: 842].</div>
-                                    </div>
-                                </details>
-                            </div>
-                        </div>
-                    </details>
-                </div>
-            </div>
-        </details>
-
-        <details class="item">
-            <summary>Situaciones dinámicas <span class="badge">Mundo 4</span></summary>
-            <div class="content">
-                <div class="field"><span class="label">Definición:</span> Actividades, acciones y procesos ligados al dinamismo[cite: 21].</div>
-                <div class="nested">
-                    <details class="item">
-                        <summary>Motrices</summary>
-                        <div class="content">
-                            <div class="field"><span class="label">Pregunta:</span> ¿Implica cambio motriz? [cite: 755]</div>
-                            <div class="field"><span class="label">Respuesta:</span> Sí, se trata de un bofetón[cite: 756].</div>
-                        </div>
-                    </details>
-                </div>
-            </div>
-        </details>
-
-        <details class="item">
-            <summary>Unidades <span class="badge">Mundo 7</span></summary>
-            <div class="content">
-                <div class="field"><span class="label">Definición:</span> Unidades de medición y ordenación cronológica[cite: 28].</div>
-                <div class="nested">
-                    <details class="item">
-                        <summary>Información digital</summary>
-                        <div class="content">
-                            <div class="field"><span class="label">Pregunta:</span> ¿Es una unidad de información digital? [cite: 794]</div>
-                            <div class="field"><span class="label">Respuesta:</span> Sí, es un byte[cite: 795].</div>
-                        </div>
-                    </details>
-                </div>
-            </div>
-        </details>
-    </div>
+    <div id="tree-container">
+        </div>
 </div>
 
 <script>
-    function filterTree() {
-        let input = document.getElementById('searchInput').value.toLowerCase();
-        let items = document.querySelectorAll('.item');
-        
-        items.forEach(item => {
-            let text = item.querySelector('summary').innerText.toLowerCase();
-            if (text.includes(input)) {
-                item.style.display = "block";
-                // Abrir automáticamente si hay búsqueda
-                if(input.length > 2) item.setAttribute('open', 'true');
-            } else {
-                item.style.display = "none";
-            }
-        });
-        
-        if(input.length === 0) {
-            items.forEach(item => {
-                item.style.display = "block";
-                item.removeAttribute('open');
-            });
-        }
-    }
-</script>
+// DATOS EXTRAÍDOS DE TU ARCHIVO TXT
+const data = [
+    { id: "ex:mundo_animado", label: "Mundo Animado", broader: null, def: "Diferencia seres vivos frente a otros representantes de otros mundos." },
+    { id: "ex:mundo_material", label: "Mundo Material", broader: null, def: "Diferencia objetos y sustancias físicas frente a otros representantes de otros mundos." },
+    { id: "ex:mundo_intelectual", label: "Mundo Intelectual", broader: null, def: "Diferencia conceptos abstractos e ideas frente a otros mundos." },
+    { id: "ex:situaciones_dinamicas", label: "Situaciones Dinámicas", broader: null, def: "Describe procesos que implican dinamismo." },
+    { id: "ex:situaciones_estaticas", label: "Situaciones Estáticas", broader: null, def: "Describe estados o propiedades que no implican cambio." },
+    { id: "ex:lugar", label: "Lugar", broader: null, def: "Diferencia lugares frente a otros representantes de otros mundos." },
+    { id: "ex:unidades", label: "Unidades", broader: null, def: "Diferencia unidades frente a otros representantes de otros mundos." },
+    
+    // EJEMPLO DE HIJOS (Aquí he incluido los que mencionaste)
+    { id: "ex:humanas_volitivas", label: "Humanas volitivas o intencionales", broader: "ex:situaciones_dinamicas", def: "Procesos con participación humana intencional." },
+    { id: "ex:motrices", label: "Motrices", broader: "ex:situaciones_dinamicas", pregunta: "¿Implica cambio motriz?", respuesta: "Sí, es un bofetón.", ejemplo: "El dolor del bofetón." },
+    { id: "ex:naturales_din", label: "Naturales (Dinámicas)", broader: "ex:situaciones_dinamicas", def: "Describe procesos naturales." },
+    { id: "ex:acontecimientos", label: "Acontecimientos", broader: "ex:situaciones_dinamicas", def: "Procesos resultativos o causativos." },
+    
+    { id: "ex:ciencias_ideologias", label: "Ciencias e ideologías", broader: "ex:mundo_intelectual", def: "Disciplinas del saber." },
+    { id: "ex:derecho", label: "Derecho y jurisprudencia", broader: "ex:ciencias_ideologias", respuesta: "Sí, es una sentencia judicial." }
+];
 
+function buildTree(nodes, parentId = null) {
+    let html = '';
+    const children = nodes.filter(n => n.broader === parentId);
+    
+    children.forEach(node => {
+        html += `<details class="item" data-text="${node.label.toLowerCase()}">
+            <summary>${node.label} ${node.broader === null ? '<span class="badge">Mundo</span>' : ''}</summary>
+            <div class="ficha">
+                ${node.def ? `<div><span class="label">Def:</span> ${node.def}</div>` : ''}
+                ${node.pregunta ? `<div><span class="label">Pregunta:</span> ${node.pregunta}</div>` : ''}
+                ${node.respuesta ? `<div><span class="label">Respuesta:</span> ${node.respuesta}</div>` : ''}
+                ${node.ejemplo ? `<div><span class="label">Ejemplo:</span> ${node.ejemplo}</div>` : ''}
+                <div class="node">${buildTree(nodes, node.id)}</div>
+            </div>
+        </details>`;
+    });
+    return html;
+}
+
+document.getElementById('tree-container').innerHTML = buildTree(data);
+
+function filtrar() {
+    let val = document.getElementById('search').value.toLowerCase();
+    let items = document.querySelectorAll('.item');
+    items.forEach(item => {
+        let txt = item.getAttribute('data-text');
+        if (txt.includes(val)) {
+            item.style.display = "block";
+            if(val.length > 2) {
+                let parent = item.parentElement;
+                while(parent && parent.tagName === 'DETAILS') {
+                    parent.setAttribute('open', 'true');
+                    parent = parent.parentElement;
+                }
+                item.setAttribute('open', 'true');
+            }
+        } else {
+            item.style.display = "none";
+        }
+    });
+}
+</script>
 </body>
 </html>
