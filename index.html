@@ -197,17 +197,20 @@ fetch('ontologia.txt')
 
 function filtrar() {
   let q = document.getElementById('search').value.toLowerCase();
+  if (q.length === 0) {
+    document.querySelectorAll('.item').forEach(it => { it.style.display = "block"; });
+    return;
+  }
   document.querySelectorAll('.item').forEach(it => {
     let text = it.getAttribute('data-search');
-    if (text.includes(q)) {
-      it.style.display = "block";
-      if (q.length > 2) {
-        it.setAttribute('open', 'true');
-        let p = it.parentElement.closest('details');
-        while (p) { p.setAttribute('open', 'true'); p = p.parentElement.closest('details'); }
-      }
-    } else { it.style.display = "none"; }
+    it.style.display = text.includes(q) ? "block" : "none";
+    if (text.includes(q) && q.length > 2) {
+      it.setAttribute('open', 'true');
+      let p = it.parentElement.closest('details');
+      while (p) { p.setAttribute('open', 'true'); p.style.display = "block"; p = p.parentElement.closest('details'); }
+    }
   });
+}
 }
 </script>
 </body>
