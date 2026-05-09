@@ -173,7 +173,7 @@ fetch('ontologia.txt')
     function draw(parentId) {
       let html = '';
       const filtered = Object.values(concepts).filter(c =>
-        parentId === null ? (!c.broader || c.broader === 'mundos_scheme') : c.broader === parentId
+        parentId === null ? (!c.broader || c.broader === 'mundos_scheme') && c.id !== 'mundos_scheme' : c.broader === parentId
       );
       filtered.forEach(c => {
         html += `<details class="item" data-search="${(c.label + c.preg + c.resp + c.ej + c.notasContra.join(' ') + c.notasRel.join(' ')).toLowerCase()}">
